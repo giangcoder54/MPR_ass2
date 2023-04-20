@@ -5,8 +5,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.widget.TextView;
 
 import java.util.List;
+import java.util.Locale;
 
 import hanu.a2_2001040056.Adapter.CartAdapter;
 import hanu.a2_2001040056.DB.DBHelper;
@@ -15,6 +17,7 @@ import hanu.a2_2001040056.models.Product;
 public class MainActivity2 extends AppCompatActivity {
 
     private CartAdapter cartAdapter;
+   private TextView totalPriceTextView ;
     private List<Product>  carts;
 
     private RecyclerView recyclerView;
@@ -34,12 +37,21 @@ public class MainActivity2 extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         recyclerView.setAdapter(cartAdapter);
+        totalPriceTextView= findViewById(R.id.total_price);
+
+        totalPriceTextView.setText(String.format(Locale.getDefault(), "Total Price : $%,d", getTotalPrice()));
 
 
 
 
 
 
-
+    }
+    public long getTotalPrice(){
+        long totalPrice = 0;
+        for(Product product : carts){
+            totalPrice += product.getSumPrice();
+        }
+        return totalPrice;
     }
 }

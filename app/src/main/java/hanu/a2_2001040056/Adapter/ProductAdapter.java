@@ -131,8 +131,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
         Cursor cursor = db.rawQuery(query, null);
 
-        String[] columnNames = cursor.getColumnNames();
-        Log.d("TAG", "Column Names: " + Arrays.toString(columnNames));
+
 
         if (cursor.moveToFirst()) {
             // The product already exists in the cart, so update its quantity

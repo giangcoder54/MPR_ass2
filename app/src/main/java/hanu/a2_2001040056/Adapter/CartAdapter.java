@@ -1,6 +1,7 @@
 package hanu.a2_2001040056.Adapter;
 
 import android.annotation.SuppressLint;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
@@ -21,11 +22,13 @@ import java.util.Locale;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import hanu.a2_2001040056.DB.DBHelper;
 import hanu.a2_2001040056.R;
 import hanu.a2_2001040056.models.Product;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder> {
     private List<Product> cart;
+    private DBHelper dbHelper;
 
     public CartAdapter(List<Product> carts) {
       this.cart = carts;
@@ -48,14 +51,25 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
         holder.sumPriceTextView.setText(String.format(Locale.getDefault(), "$%,d", cartItem.getSumPrice()));
 
+        dbHelper = new DBHelper(holder.itemView.getContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+
         // handle decrease button
         holder.decreaseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cartItem.setQuantity(cartItem.getQuantity() -1);
+                int currentQuantity = cartItem.getQuantity();
+                int newQuantity = currentQuantity -1;
+                cartItem.setQuantity(newQuantity);
                 if(cartItem.getQuantity() == 0){
                     cart.remove(position);
+                    db.execSQL("delete from cart where id ="+cartItem.getId());
                 }
+                String update ="update cart set quantity = "+newQuantity +" where id = "+ cartItem.getId();
+                db.execSQL(update);
+
+
 
                 holder.sumPriceTextView.setText(String.format(Locale.getDefault(), "$%,d", cartItem.getSumPrice()));
                 // Notify the adapter that the cart has changed
@@ -66,13 +80,19 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         holder.increaseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cartItem.setQuantity(cartItem.getQuantity() +1);
+                int currentQuality = cartItem.getQuantity();
+                int newQuantity = currentQuality +1;
+                cartItem.setQuantity(newQuantity);
 
+                String update ="update cart set quantity = "+newQuantity +" where id = "+ cartItem.getId();
+                db.execSQL(update);
                 holder.sumPriceTextView.setText(String.format(Locale.getDefault(), "$%,d", cartItem.getSumPrice()));
                 // Notify the adapter that the cart has changed
                 notifyDataSetChanged();
             }
         });
+
+
 
         // Load image for the product using Glide and an Executor
         Executor executor = Executors.newSingleThreadExecutor();
@@ -98,12 +118,14 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         return cart.size();
     }
 
+
+
     static class CartViewHolder extends RecyclerView.ViewHolder {
         TextView productNameTextView;
         TextView quantityTextView;
         TextView unitPriceTextView;
         TextView sumPriceTextView;
-        TextView totalPriceTextView;
+
         ImageView productImageView;
 
         Button increaseBtn;
@@ -116,9 +138,11 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             quantityTextView = itemView.findViewById(R.id.quantity_text);
             unitPriceTextView = itemView.findViewById(R.id.product_price);
             sumPriceTextView = itemView.findViewById(R.id.tv_SumPrice);
-            totalPriceTextView = itemView.findViewById(R.id.total_price);
             increaseBtn = itemView.findViewById(R.id.increase_button);
             decreaseBtn = itemView.findViewById(R.id.decrease_button);
+
+
+
         }
 
     }
