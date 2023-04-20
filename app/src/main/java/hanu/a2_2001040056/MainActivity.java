@@ -1,15 +1,19 @@
 package hanu.a2_2001040056;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.SearchView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import hanu.a2_2001040056.Adapter.ProductAdapter;
@@ -25,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
 
     private ImageButton myCartImageButton;
+
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         recyclerView = findViewById(R.id.RecycleView);
+        recyclerView.setLayoutManager(new GridLayoutManager(this,2));
+
         recyclerView.setAdapter(productAdapter);
 
         myCartImageButton = findViewById(R.id.my_cart);
@@ -72,5 +80,34 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-}
+
+         searchView = findViewById(R.id.searchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // Not used, but required to implement SearchView.OnQueryTextListener
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterProducts(newText);
+                return true;
+            }
+        });
+
+    }
+    private void filterProducts(String query) {
+        List<Product> filteredList = new ArrayList<>();
+
+        for (Product product : products) {
+            if (product.getName().toLowerCase().contains(query.toLowerCase())) {
+                filteredList.add(product);
+            }
+        }
+
+        productAdapter.filterList(filteredList);
+    }
+
+
 }

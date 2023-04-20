@@ -152,4 +152,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         }
     }
 
+    public void filterList(List<Product> filteredList) {
+        productsList = filteredList;
+        notifyDataSetChanged();
+    }
+
+
 }

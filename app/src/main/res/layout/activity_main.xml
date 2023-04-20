@@ -50,25 +50,26 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/Title">
 
-            <EditText
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_weight="0.9"
+            <SearchView
+                android:id="@+id/searchView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:iconifiedByDefault="false"
                 android:background="@null"
-                android:hint="Search..."
+                android:queryHint="Search ..."
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
                 android:textColor="@color/colorAccent"
                 android:textSize="16sp"
-                tools:ignore="TouchTargetSizeCheck"></EditText>
+                tools:ignore="TouchTargetSizeCheck"></SearchView>
 
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/search_icon_background"
-                android:padding="6dp"
-                android:src="@drawable/ic_search"
-                app:tint="@color/colorPrimary"></ImageView>
+<!--            <ImageView-->
+<!--                android:layout_width="40dp"-->
+<!--                android:layout_height="40dp"-->
+<!--                android:background="@drawable/search_icon_background"-->
+<!--                android:padding="6dp"-->
+<!--                android:src="@drawable/ic_search"-->
+<!--                app:tint="@color/colorPrimary"></ImageView>-->
         </LinearLayout>
 
 
