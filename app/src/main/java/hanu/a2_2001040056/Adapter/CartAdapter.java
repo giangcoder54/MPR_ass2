@@ -30,6 +30,14 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     private List<Product> cart;
     private DBHelper dbHelper;
 
+    private OnCartItemQuantityChangeListener quantityChangeListener;
+
+    // ...
+
+    public void setOnCartItemQuantityChangeListener(OnCartItemQuantityChangeListener listener) {
+        this.quantityChangeListener = listener;
+    }
+
     public CartAdapter(List<Product> carts) {
       this.cart = carts;
     }
@@ -69,11 +77,16 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
                 String update ="update cart set quantity = "+newQuantity +" where id = "+ cartItem.getId();
                 db.execSQL(update);
 
-
+                // Gọi callback để thông báo khi số lượng sản phẩm được thay đổi
+//                if (quantityChangeListener != null) {
+//                    quantityChangeListener.onCartItemQuantityChanged();
+//                }
 
                 holder.sumPriceTextView.setText(String.format(Locale.getDefault(), "$%,d", cartItem.getSumPrice()));
                 // Notify the adapter that the cart has changed
                 notifyDataSetChanged();
+                // Gọi callback để thông báo khi số lượng sản phẩm được thay đổi
+                updateCartTotalPrice();
             }
         });
         // handle increase button
@@ -86,9 +99,12 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
                 String update ="update cart set quantity = "+newQuantity +" where id = "+ cartItem.getId();
                 db.execSQL(update);
+
                 holder.sumPriceTextView.setText(String.format(Locale.getDefault(), "$%,d", cartItem.getSumPrice()));
                 // Notify the adapter that the cart has changed
                 notifyDataSetChanged();
+                // Gọi callback để thông báo khi số lượng sản phẩm được thay đổi
+                updateCartTotalPrice();
             }
         });
 
@@ -142,8 +158,25 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             decreaseBtn = itemView.findViewById(R.id.decrease_button);
 
 
-
         }
 
+
+
+    }
+    private void updateCartTotalPrice() {
+        long totalPrice = 0;
+
+        for (Product cartItem : cart) {
+            totalPrice += cartItem.getSumPrice();
+        }
+
+        if (quantityChangeListener != null) {
+            quantityChangeListener.onCartTotalPriceChanged(totalPrice);
+        }
+    }
+    public interface OnCartItemQuantityChangeListener {
+        void onCartItemQuantityChanged();
+
+        void onCartTotalPriceChanged(long newTotalPrice);
     }
 }
