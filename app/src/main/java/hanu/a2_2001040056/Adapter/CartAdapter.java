@@ -77,10 +77,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
                 String update ="update cart set quantity = "+newQuantity +" where id = "+ cartItem.getId();
                 db.execSQL(update);
 
-                // Gọi callback để thông báo khi số lượng sản phẩm được thay đổi
-//                if (quantityChangeListener != null) {
-//                    quantityChangeListener.onCartItemQuantityChanged();
-//                }
+
 
                 holder.sumPriceTextView.setText(String.format(Locale.getDefault(), "$%,d", cartItem.getSumPrice()));
                 // Notify the adapter that the cart has changed

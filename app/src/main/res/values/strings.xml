@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">My Cart</string>
+    <string name="total_price">Total Price: $0</string>
+    <string name="product_name">Product Name</string>
+    <string name="product_price">Product Price</string>
+    <string name="price">Price:$0</string>
+    <string name="sum_price">sum price</string>
 </resources>

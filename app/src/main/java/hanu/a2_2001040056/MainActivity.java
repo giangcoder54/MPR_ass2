@@ -47,6 +47,7 @@ import hanu.a2_2001040056.models.Product;
 
 
 public class MainActivity extends AppCompatActivity  {
+    public static  final String URL ="https://hanu-congnv.github.io/mpr-cart-api/products.json";
     private ProductAdapter productAdapter;
     private List<Product> products;
     private RecyclerView recyclerView;
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity  {
 
 
 
-        String url = "https://hanu-congnv.github.io/mpr-cart-api/products.json";
+
         Handler handler = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
             handler = Handler.createAsync(Looper.getMainLooper());
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity  {
         Constants.executor.execute(() -> {
             //connect to api
             //read api
-            String json = loadJSON(url);
+            String json = loadJSON(URL);
             assert finalHandler != null;
             finalHandler.post(() -> {
                 if (json == null) {
@@ -91,10 +92,13 @@ public class MainActivity extends AppCompatActivity  {
 
                             products.add(new Product(id,thumbnail,name,category,unitPrice));
                         }
-                        productAdapter = new ProductAdapter(products,this);
+                        productAdapter = new ProductAdapter();
+                        productAdapter.setProductsList(products);
+
                         recyclerView = findViewById(R.id.RecycleView);
                         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
                         recyclerView.setAdapter(productAdapter);
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
